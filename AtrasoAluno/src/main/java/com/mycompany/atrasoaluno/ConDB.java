@@ -93,6 +93,23 @@ public class ConDB {
         }
     }
     
+    
+    public int getTurmaId(String nome) throws SQLException {
+
+        int retorno = 0;
+
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            PreparedStatement query = con.prepareStatement("SELECT id_turma FROM turma WHERE nome_turma = '" + nome + "';");
+            ResultSet rSet = query.executeQuery();
+
+            rSet.next();
+            retorno = rSet.getInt(1);
+            
+            con.close();
+            return retorno;
+        }
+    }
+
     //Esvazia o arrayAluno e Preenche ele com todos os alunos
     public void returnTodasTurmas() throws SQLException {
         arrayAluno.clear();
