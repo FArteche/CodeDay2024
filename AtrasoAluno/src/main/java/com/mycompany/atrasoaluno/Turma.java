@@ -15,6 +15,7 @@ import java.sql.SQLException;
  * @author faart
  */
 public class Turma {
+
     ConDB condb = new ConDB();
     private String nome;
 
@@ -64,5 +65,8 @@ public class Turma {
             con.close();
             return retorno;
         }
+
     }
+
+
 }

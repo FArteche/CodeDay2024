@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         //CRIAR ALUNO
 
-        Aluno aluno = new Aluno(null, null, null, 0);
+        Aluno aluno = new Aluno("Joseph", "+1111111", "jojo@gmail.com", 2);
 
         try {
             aluno.criarAlunoBD();
@@ -17,7 +17,7 @@ public class Main {
 
         //CRIAR FUNCIONARIO
 
-        Funcionario funcionario = new Funcionario(null, null, null, 0);
+        Funcionario funcionario = new Funcionario("Joselino", "+5555555", "joselino@gmail.com", 1);
 
         try {
             funcionario.criarFuncionarioBD();
@@ -27,7 +27,7 @@ public class Main {
         }
         //CRIAR ATRASO
 
-        Atraso atraso = new Atraso(aluno, null, null, null, funcionario);
+    Atraso atraso = new Atraso(aluno, "25-09-2024", "12:22", "Trânsito", funcionario);
 
         try {
             atraso.criarAtrasoBD();
