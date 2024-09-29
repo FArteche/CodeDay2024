@@ -37,7 +37,22 @@ public class ConDB {
             return aluno;
         }
     }
-    
+   
+        
+    public Aluno returnAlunoPorNome(String nomeAluno) throws SQLException{
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            
+            Aluno aluno = null;
+            
+            PreparedStatement query = con.prepareStatement("SELECT * FROM aluno WHERE nome_aluno LIKE '"+nomeAluno+"';");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                aluno = new Aluno(rSet.getString(2), rSet.getString(3), rSet.getString(4), rSet.getInt(5));
+            }
+            con.close();
+            return aluno;
+        }
+    }
     
     public Funcionario returnFuncionario(int idFunc) throws SQLException{
         try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {

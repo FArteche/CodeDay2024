@@ -177,7 +177,7 @@ public class AtrasoAluno extends JFrame implements ActionListener {
         alunoUpdateF.setVisible(false);
         alunoCL.add(alunoUpdateF, "atualizarLivro");
 
-        confUpdAluno = new JButton("Seleciona livro");
+        confUpdAluno = new JButton("Selecionar Aluno");
         confUpdAluno.addActionListener(this);
         alunoUpdateF.add(confUpdAluno);
         alunoUpdateF.add(boxAlunoUpd);
@@ -199,7 +199,7 @@ public class AtrasoAluno extends JFrame implements ActionListener {
         turmaAlunoUpd.addActionListener(this);
         alunoUpdateF.add(turmaAlunoUpd);
 
-        alunoUpdConf = new JButton("Confirmar");
+        alunoUpdConf = new JButton("Atualizar");
         alunoUpdConf.addActionListener(this);
         alunoUpdateF.add(alunoUpdConf);
 
@@ -475,10 +475,10 @@ public class AtrasoAluno extends JFrame implements ActionListener {
                 alunoCL.setVisible(true);
                 clLivro.show(alunoCL, "adicionarLivro");
                 titulo.setText("Adicionar Aluno");
-                
+
                 turmaAlunoAdd.setEnabled(true);
                 turmaAlunoAdd.removeAllItems();
-                
+
                 nomeAlunoAdd.setText("");
                 telefoneAlunoAdd.setText("");
                 emailAlunoAdd.setText("");
@@ -490,29 +490,69 @@ public class AtrasoAluno extends JFrame implements ActionListener {
 
             }
             if (e.getSource() == alunoAddConf) {
-                
+
                 Aluno aluno = new Aluno(nomeAlunoAdd.getText(), telefoneAlunoAdd.getText(), emailAlunoAdd.getText(), condb.getTurmaId(turmaAlunoAdd.getSelectedObjects().toString()));
-                
+
                 nomeAlunoAdd.setText("");
                 telefoneAlunoAdd.setText("");
                 emailAlunoAdd.setText("");
             }
             if (e.getSource() == alunoMenuDel) {
-                
+                boxAlunoDel.removeAllItems();
+                condb.returnTodosAlunos();
+
+                for (Aluno a : condb.arrayAluno) {
+                    boxAlunoDel.addItem(a.getNome());
+                }
+            }
+            if (e.getSource() == alunoMenuUpd) {
+                alunoCL.setVisible(true);
+                clLivro.show(alunoCL, "atualizarLivro");
+                titulo.setText("Atualizar Aluno");
+
+                boxAlunoUpd.setEnabled(true);
+                boxAlunoUpd.removeAllItems();
+                turmaAlunoUpd.setEnabled(true);
+                turmaAlunoUpd.removeAllItems();
+
+                condb.returnTodosAlunos();
+                for (Aluno a : condb.arrayAluno) {
+                    boxAlunoUpd.addItem(a.getNome());
+                }
+
+                condb.returnTodasTurmas();
+                for (Turma t : condb.arrayTurma) {
+                    turmaAlunoUpd.addItem(t.getNome());
+                }
             }
             if (e.getSource() == confUpdAluno) {
-                
+                Aluno aluno = condb.returnAlunoPorNome(boxAlunoUpd.getSelectedItem().toString());
+                nomeAlunoUpd.setText(aluno.getNome());
+                telefoneAlunoUpd.setText(aluno.getTelefone());
+                emailAlunoUpd.setText(aluno.getEmail());
+                turmaAlunoUpd.setSelectedItem(aluno.getTurmaNome());
             }
+
             if (e.getSource() == alunoUpdConf) {
 
+                Aluno aluno = condb.returnAlunoPorNome(boxAlunoUpd.getSelectedItem().toString());
+                aluno.atualizarAlunoDB(nomeAlunoUpd.getText(), telefoneAlunoUpd.getText(), emailAlunoUpd.getText(), condb.getTurmaId(turmaAlunoUpd.getSelectedObjects().toString()));
+
+                nomeAlunoUpd.setText("");
+                telefoneAlunoUpd.setText("");
+                emailAlunoUpd.setText("");
             }
 
-            /*BOTÕES DO MENU DE AUTOR*/
+            /*BOTÕES DO MENU DE TURMA*/
             if (e.getSource() == autorMenuAdd) {
-
+                autorCL.setVisible(true);
+                clAutor.show(autorCL, "adicionarAutor");
+                titulo.setText("Adicionar Autor");
             }
             if (e.getSource() == autorAddConf) {
-
+                autorCL.setVisible(true);
+                clAutor.show(autorCL, "deletarAutor");
+                titulo.setText("Deletar Autor");
             }
             if (e.getSource() == autorMenuDel) {
 
@@ -521,32 +561,42 @@ public class AtrasoAluno extends JFrame implements ActionListener {
 
             }
             if (e.getSource() == autorMenuUpd) {
-
+                autorCL.setVisible(true);
+                clAutor.show(autorCL, "atualizarAutor");
+                titulo.setText("Atualizar Autor");
             }
             if (e.getSource() == autorUpdConf) {
 
             }
             if (e.getSource() == autorMenuListar) {
-
+                autorCL.setVisible(true);
+                clAutor.show(autorCL, "listarAutor");
+                titulo.setText("Listar Autores");
             }
             if (e.getSource() == autorListConf) {
 
             }
             /*BOTÕES DO MENU DE MEMBROS*/
             if (e.getSource() == membroMenuAdd) {
-
+                membroCL.setVisible(true);
+                clMembro.show(membroCL, "adicionarMembro");
+                titulo.setText("Adicionar Membro");
             }
             if (e.getSource() == membroAddConf) {
 
             }
             if (e.getSource() == membroMenuDel) {
-
+                membroCL.setVisible(true);
+                clMembro.show(membroCL, "deletarMembro");
+                titulo.setText("Deletar Membro");
             }
             if (e.getSource() == membroDelConf) {
 
             }
             if (e.getSource() == membroMenuUpd) {
-
+                membroCL.setVisible(true);
+                clMembro.show(membroCL, "atualizarMembro");
+                titulo.setText("Atualizar Membro");
             }
             if (e.getSource() == confUpdMembro) {
 
@@ -555,7 +605,9 @@ public class AtrasoAluno extends JFrame implements ActionListener {
 
             }
             if (e.getSource() == membroMenuListar) {
-
+                membroCL.setVisible(true);
+                listarMembroTextoEdit.setText("");
+                titulo.setText("Listar Membro");
             }
             if (e.getSource() == membroListConf) {
 
