@@ -25,7 +25,7 @@ public class Aluno {
 
     //cria aluno a partir do objeto
     public void criarAlunoBD() throws SQLException {
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("INSERT INTO aluno (`nome_aluno`,`telefone_aluno`,`email_aluno`,`id_turma`)VALUES('" + nome + "','" + telefone + "','" + email + "'," + turma + ");");
             query.executeUpdate();
         }
@@ -33,7 +33,7 @@ public class Aluno {
 
     //atualiza aluno com os dados novos
     public void atualizarAlunoDB(String nome, String telefone, String email, int turma) throws SQLException {
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("UPDATE aluno SET `nome_aluno` = '" + nome + "',`telefone_aluno` = '" + telefone + "',`email_aluno` = '" + email + "',`id_turma` = " + turma + " WHERE `id_aluno` = " + getAlunoId() + ";");
             query.executeUpdate();
 
@@ -47,7 +47,7 @@ public class Aluno {
 
         int retorno = 0;
 
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("SELECT id_aluno FROM aluno WHERE nome_aluno = '" + nome + "' AND telefone_aluno = '" + telefone + "' AND email_aluno = '" + email + "' AND id_turma = " + turma + ";");
             ResultSet rSet = query.executeQuery();
 

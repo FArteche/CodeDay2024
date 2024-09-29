@@ -28,7 +28,7 @@ public class Funcionario {
     
     //Cria funcionario a partir do objeto
     public void criarFuncionarioBD() throws SQLException {
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("INSERT INTO funcionario (`nome_func`,`telefone_func`,`email_func`,`id_tipofunc`)VALUES('" + nome + "','" + telefone + "','" + email + "'," + tipo + ");");
             query.executeUpdate();
         }
@@ -36,7 +36,7 @@ public class Funcionario {
     
     //Coloca professor em uma nova turma (FORMATO DA HORA TEM QUE SER HH:MM:SS)
     public void profNovaTurma(String nome_turma, String horario, String nomeAula, Turma turma) throws SQLException{
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("INSERT INTO turma_funcionario(`id_turma`,`id_func`,`horario_aula`,`nome_aula`)VALUES("+turma.getTurmaId()+","+getFuncionarioId()+",`"+horario+"`,`"+nomeAula+"`);");
             query.executeUpdate();
         }
@@ -44,7 +44,7 @@ public class Funcionario {
     
     //atualiza funcionario com dados novos
     public void atualizarFuncionarioDB(String nome, String telefone, String email, int turma) throws SQLException {
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("UPDATE funcionario SET `nome_func` = '"+nome+"',`telefone_func` = '"+telefone+"',`email_func` ='"+email+"',`id_tipofunc` = "+tipo+" WHERE `id_func` = "+getFuncionarioId()+";");
             query.executeUpdate();
 
@@ -58,7 +58,7 @@ public class Funcionario {
 
         int retorno = 0;
 
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("SELECT id_func FROM funcionario WHERE nome_func = '" + nome + "' AND telefone_func = '" + telefone + "' AND email_func = '" + email + "' AND id_tipofunc = " + tipo + ";");
             ResultSet rSet = query.executeQuery();
 

@@ -28,8 +28,12 @@ public class Atraso {
     
     //cria relato de atraso a partir do objeto  (FORMATO DA HORA HH:MM:SS / FORMATO DA DATA AAAA-MM-DD)
     public void criarAtrasoBD() throws SQLException {
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("INSERT INTO atraso(`data_atraso`,`hora_atraso`,`justificativa`,`id_aluno`,`id_func`)VALUES('"+data+"','"+hora+"','"+justificativa+"',"+aluno.getAlunoId()+","+funcionario.getFuncionarioId()+");");
+            
+            EmailSender emailEnviar = new EmailSender();
+            emailEnviar.enviar();
+            
             query.executeUpdate();
         }
     }
@@ -39,7 +43,7 @@ public class Atraso {
 
         int retorno = 0;
 
-        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "ideia#123#db");) {
             PreparedStatement query = con.prepareStatement("SELECT id_atraso FROM atraso WHERE id_aluno = '" + aluno.getAlunoId() + "' AND id_func = '" + funcionario.getFuncionarioId() + "' AND data_atraso = '" + data+";");
             ResultSet rSet = query.executeQuery();
 
