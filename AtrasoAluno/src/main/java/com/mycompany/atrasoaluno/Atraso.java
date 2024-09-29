@@ -50,7 +50,23 @@ public class Atraso {
             return retorno;
         }
     }
+    
+    //Retorna id do relato de atraso
+    public int getNumAtrasoAluno() throws SQLException {
 
+        int retorno = 0;
+
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+            PreparedStatement query = con.prepareStatement("SELECT count(id_aluno) FROM atraso WHERE id_aluno = "+aluno.getAlunoId()+";");
+            ResultSet rSet = query.executeQuery();
+
+            rSet.next();
+            retorno = rSet.getInt(1);
+            
+            con.close();
+            return retorno;
+        }
+    }
     
     public Aluno getAluno() {
         return aluno;

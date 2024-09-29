@@ -147,6 +147,20 @@ public class ConDB {
         }
     }
     
+    public void returnAtrasos() throws SQLException {
+        arrayAtraso.clear();
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            
+            Atraso atraso;
+            
+            PreparedStatement query = con.prepareStatement("SELECT * FROM atraso");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                arrayAtraso.add(atraso = new Atraso(returnAluno(rSet.getInt(5)), rSet.getString(2), rSet.getString(3), rSet.getString(4), returnFuncionario(rSet.getInt(6))));
+            }
+            con.close();
+        }
+    }
     
     public void returnTodosAtrasosAluno(String nomeAluno) throws SQLException {
         arrayAluno.clear();

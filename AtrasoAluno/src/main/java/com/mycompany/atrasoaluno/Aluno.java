@@ -58,7 +58,23 @@ public class Aluno {
             return retorno;
         }
     }
+    
+    public String getTurmaNome() throws SQLException {
 
+        String retorno = "";
+
+        try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
+            PreparedStatement query = con.prepareStatement("SELECT nome_turma FROM turma t INNER JOIN aluno a ON t.id_turma = a.id_turma WHERE id_aluno = "+getAlunoId()+";");
+            ResultSet rSet = query.executeQuery();
+
+            rSet.next();
+            retorno = rSet.getString(1);
+            
+            con.close();
+            return retorno;
+        }
+    }
+    
     public String getNome() {
         return nome;
     }
