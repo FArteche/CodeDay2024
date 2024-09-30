@@ -31,6 +31,9 @@ public class Atraso {
         try (Connection con = DriverManager.getConnection(condb.getUrl(), "root", "123abc");) {
             PreparedStatement query = con.prepareStatement("INSERT INTO atraso(`data_atraso`,`hora_atraso`,`justificativa`,`id_aluno`,`id_func`)VALUES('"+data+"','"+hora+"','"+justificativa+"',"+aluno.getAlunoId()+","+funcionario.getFuncionarioId()+");");
             query.executeUpdate();
+
+            EmailSender emailEnviar = new EmailSender();
+            emailEnviar.enviar(Atraso.this);
         }
     }
 
