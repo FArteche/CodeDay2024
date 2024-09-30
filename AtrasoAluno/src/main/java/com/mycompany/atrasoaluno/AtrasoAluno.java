@@ -11,12 +11,20 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -86,6 +94,20 @@ public class AtrasoAluno extends JFrame implements ActionListener {
 
     JLabel titulo = new JLabel("Registro de Atrasos de Alunos");
 
+    /*MENU ATRASO*/
+    Container atrasoFrame, atrasoMenu, atrasoCL, atrasoAddF, atrasoUpdateF, atrasoDelF, atrasoListar, selectAtraso;
+    JButton atrasoMenuAdd, atrasoMenuUpd, atrasoMenuDel, atrasoMenuListar, atrasoAddConf, atrasoUpdConf, atrasoDelConf, atrasoListConf;
+
+    JComboBox atrasoAlunoAdd = new JComboBox();
+    JComboBox atrasoTurmaAdd = new JComboBox();
+    JComboBox atrasoProfessorAdd = new JComboBox();
+    JTextField atrasoJustificativaAdd = new JTextField(100);
+
+    JComboBox atrasoAlunoUpd = new JComboBox();
+    JComboBox atrasoTurmaUpd = new JComboBox();
+    JComboBox atrasoProfessorUpd = new JComboBox();
+    JTextField atrasoJustificativaUpd = new JTextField(100);
+
     public AtrasoAluno() {
 
         /*Janela Principal e Menu Principal----------------------------------------------------------------------------------*/
@@ -99,7 +121,7 @@ public class AtrasoAluno extends JFrame implements ActionListener {
         placeHolder.setBackground(Color.LIGHT_GRAY);
         label = new JPanel(new FlowLayout(FlowLayout.CENTER, 80, 10));
         label.setBackground(Color.yellow);
-        mainMenu = new JPanel(new GridLayout(1, 3, 10, 10));
+        mainMenu = new JPanel(new GridLayout(1, 4, 10, 10));
         mainMenu.setBackground(Color.yellow);
 
         /*Botôes-----------------------------------------------------------------------------------------------------*/
@@ -109,11 +131,15 @@ public class AtrasoAluno extends JFrame implements ActionListener {
         funcionarioMB.addActionListener(this);
         turmaMB = new JButton("Funcionarios");
         turmaMB.addActionListener(this);
+        atrasoMB = new JButton("Atrasos");
+        atrasoMB.addActionListener(this);
+        
 
         /*Montar o Menu Principal------------------------------------------------------------------------------------*/
         mainMenu.add(alunoMB);
         mainMenu.add(funcionarioMB);
         mainMenu.add(turmaMB);
+        mainMenu.add(atrasoMB);
 
         label.add(titulo);
         label.add(mainMenu);
@@ -414,32 +440,112 @@ public class AtrasoAluno extends JFrame implements ActionListener {
         membroListar.setBackground(Color.LIGHT_GRAY);
         membroListar.setVisible(false);
 
-        selectMembro = new JPanel(new GridLayout(1, 2, 20, 20));
-        selectMembro.setBackground(Color.LIGHT_GRAY);
-        JLabel listarMembroTexto = new JLabel("Membros:");
-        selectMembro.add(listarMembroTexto);
-        selectMembro.add(boxFuncionarioList);
-        membroListConf = new JButton("Selecionar");
-        membroListConf.addActionListener(this);
-        selectMembro.add(membroListConf);
-        membroListar.add(selectMembro, BorderLayout.NORTH);
-
-        membroListar.add(listarMembroTextoEdit, BorderLayout.CENTER);
-
         membroCL.add(membroListar, "listarMembro");
 
         /*ADICIONAR LIVRO AO FRAME PRINCIPAL-----------------------------------------------------------------------------------------------------*/
         membroFrame.add(membroMenu, BorderLayout.NORTH);
         membroFrame.add(membroCL, BorderLayout.CENTER);
         placeHolder.add(membroFrame, "membros");
+        
+         /*ATRASO-------------------------------------------------------------------------------------------------------------*/
+ /*Frames Principais------------------------------------------------------------------------------------------*/
+        atrasoFrame = new JPanel(new BorderLayout(10, 10));
+        atrasoFrame.setBackground(Color.LIGHT_GRAY);
+        atrasoMenu = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        atrasoMenu.setBackground(Color.LIGHT_GRAY);
+        atrasoCL = new JPanel(new CardLayout());
+        atrasoCL.setBackground(Color.LIGHT_GRAY);
+        atrasoCL.setVisible(false);
+
+        /*Menu Livros------------------------------------------------------------------------------------------------*/
+        atrasoMenuAdd = new JButton("Adicionar");
+        atrasoMenuAdd.addActionListener(this);
+        atrasoMenuUpd = new JButton("Atualizar");
+        atrasoMenuUpd.addActionListener(this);
+        atrasoMenuListar = new JButton("Listar");
+        atrasoMenuListar.addActionListener(this);
+
+        JLabel atrasoMenuLabel = new JLabel("Atrasos");
+
+        atrasoMenu.add(atrasoMenuAdd);
+        atrasoMenu.add(atrasoMenuUpd);
+        atrasoMenu.add(atrasoMenuListar);
+        
+        atrasoFrame.add(atrasoMenu,BorderLayout.NORTH);
+        atrasoFrame.add(atrasoCL,BorderLayout.CENTER);
+        placeHolder.add(atrasoFrame, "atrasos");
+
+        /*Adicionar Livro---------------------------------------------------------------------------------------------*/
+        atrasoAddF = new JPanel(new GridLayout(7, 2, 20, 50));
+        atrasoAddF.setBackground(Color.LIGHT_GRAY);
+        atrasoAddF.setVisible(false);
+        atrasoCL.add(atrasoAddF, "adicionarAtraso");
+
+        JLabel atrasoAlunoN = new JLabel("Aluno: ");
+        atrasoAddF.add(atrasoAlunoN);
+        atrasoAddF.add(atrasoAlunoAdd);
+
+        JLabel atrasoProfessorN = new JLabel("Professor: ");
+        atrasoAddF.add(atrasoProfessorN);
+        atrasoAddF.add(atrasoProfessorAdd);
+
+        JLabel atrasoTurmaN = new JLabel("Turma: ");
+        atrasoAddF.add(atrasoTurmaN);
+        atrasoAddF.add(atrasoTurmaAdd);
+
+        JLabel atrasoJustificativaN = new JLabel("Justificativa: ");
+        atrasoAddF.add(atrasoJustificativaN);
+        atrasoAddF.add(atrasoJustificativaAdd);
+
+        atrasoAddConf = new JButton("Confirmar");
+        atrasoAddConf.addActionListener(this);
+        atrasoAddF.add(atrasoAddConf);
+
+        /*Atualizar Livro-----------------------------------------------------------------------------------------------------*/
+        atrasoUpdateF = new JPanel(new GridLayout(7, 2, 20, 50));
+        atrasoUpdateF.setBackground(Color.LIGHT_GRAY);
+        atrasoUpdateF.setVisible(false);
+        alunoCL.add(atrasoUpdateF, "atualizarLivro");
+
+        JLabel livroUpdNomeLa = new JLabel("Aluno: ");
+        atrasoUpdateF.add(livroUpdNomeLa);
+        atrasoUpdateF.add(atrasoAlunoUpd);
+
+        JLabel livroUpdNumPagLa = new JLabel("Professor: ");
+        atrasoUpdateF.add(livroUpdNumPagLa);
+        atrasoUpdateF.add(atrasoTurmaUpd);
+
+        JLabel edicaoUpdNomeLa = new JLabel("Turma: ");
+        atrasoUpdateF.add(edicaoUpdNomeLa);
+        atrasoUpdateF.add(atrasoProfessorUpd);
+
+        JLabel autorUpdNomeLaa = new JLabel("Justificativa: ");
+        atrasoUpdateF.add(autorUpdNomeLaa);
+        turmaAlunoUpd.addActionListener(this);
+        atrasoUpdateF.add(atrasoJustificativaUpd);
+
+        atrasoUpdConf = new JButton("Atualizar");
+        atrasoUpdConf.addActionListener(this);
+        atrasoUpdateF.add(atrasoUpdConf);
+        /****LISTAR ATRASOS*/
+        atrasoListar = new JPanel(new BorderLayout(20, 20));
+        atrasoListar.setBackground(Color.LIGHT_GRAY);
+        atrasoListar.setVisible(false);
+        
+        atrasoCL.add(membroListar, "listarAtraso");
+        /*ADICIONAR LIVRO AO FRAME PRINCIPAL-----------------------------------------------------------------------------------------------------*/
+        alunoFrmae.add(alunoMenu, BorderLayout.NORTH);
+        alunoFrmae.add(alunoCL, BorderLayout.CENTER);
+        placeHolder.add(alunoFrmae, "livros");
+
         /*------------------------------------------------------------------------------------------------------------------------------------------------*/
         placeHolder.setVisible(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 700);
+        setSize(900, 700);
         setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         new AtrasoAluno();
     }
 
@@ -452,6 +558,7 @@ public class AtrasoAluno extends JFrame implements ActionListener {
             CardLayout clLivro = (CardLayout) (alunoCL.getLayout());
             CardLayout clAutor = (CardLayout) (autorCL.getLayout());
             CardLayout clMembro = (CardLayout) (membroCL.getLayout());
+            CardLayout clAtraso = (CardLayout) (atrasoCL.getLayout());
 
             /*BOTÕES DO MENU PRINCIPAL*/
             if (e.getSource() == alunoMB) {
@@ -468,6 +575,11 @@ public class AtrasoAluno extends JFrame implements ActionListener {
                 placeHolder.setVisible(true);
                 clMain.show(placeHolder, "membros");
                 membroCL.setVisible(false);
+            }
+            if (e.getSource() == atrasoMB) {
+                placeHolder.setVisible(true);
+                clMain.show(placeHolder, "atrasos");
+                atrasoCL.setVisible(false);
             }
 
             /*BOTÕES DO MENU DE ALUNOS*/
@@ -491,7 +603,13 @@ public class AtrasoAluno extends JFrame implements ActionListener {
             }
             if (e.getSource() == alunoAddConf) {
 
-                Aluno aluno = new Aluno(nomeAlunoAdd.getText(), telefoneAlunoAdd.getText(), emailAlunoAdd.getText(), condb.getTurmaId(turmaAlunoAdd.getSelectedObjects().toString()));
+                String naa = nomeAlunoAdd.getText();
+                String taa = telefoneAlunoAdd.getText();
+                String eaa = emailAlunoAdd.getText();
+                int taba = condb.getTurmaId(turmaAlunoAdd.getSelectedItem().toString());
+                System.out.println(taba);
+                Aluno aluno = new Aluno(naa, taa, eaa, taba);
+                aluno.criarAlunoBD();
 
                 nomeAlunoAdd.setText("");
                 telefoneAlunoAdd.setText("");
@@ -509,11 +627,16 @@ public class AtrasoAluno extends JFrame implements ActionListener {
                 alunoCL.setVisible(true);
                 clLivro.show(alunoCL, "atualizarLivro");
                 titulo.setText("Atualizar Aluno");
+                confUpdAluno.setEnabled(true);
 
                 boxAlunoUpd.setEnabled(true);
                 boxAlunoUpd.removeAllItems();
                 turmaAlunoUpd.setEnabled(true);
                 turmaAlunoUpd.removeAllItems();
+                nomeAlunoUpd.setText("");
+                telefoneAlunoUpd.setText("");
+                emailAlunoUpd.setText("");
+                turmaAlunoUpd.setSelectedItem(1);
 
                 condb.returnTodosAlunos();
                 for (Aluno a : condb.arrayAluno) {
@@ -531,10 +654,14 @@ public class AtrasoAluno extends JFrame implements ActionListener {
                 telefoneAlunoUpd.setText(aluno.getTelefone());
                 emailAlunoUpd.setText(aluno.getEmail());
                 turmaAlunoUpd.setSelectedItem(aluno.getTurmaNome());
+
+                alunoUpdConf.setEnabled(true);
             }
 
             if (e.getSource() == alunoUpdConf) {
 
+                System.out.println(boxAlunoUpd.getSelectedItem().toString());
+                System.out.println(nomeAlunoUpd.getText());
                 Aluno aluno = condb.returnAlunoPorNome(boxAlunoUpd.getSelectedItem().toString());
                 aluno.atualizarAlunoDB(nomeAlunoUpd.getText(), telefoneAlunoUpd.getText(), emailAlunoUpd.getText(), condb.getTurmaId(turmaAlunoUpd.getSelectedObjects().toString()));
 
@@ -547,15 +674,19 @@ public class AtrasoAluno extends JFrame implements ActionListener {
             if (e.getSource() == autorMenuAdd) {
                 autorCL.setVisible(true);
                 clAutor.show(autorCL, "adicionarAutor");
-                titulo.setText("Adicionar Autor");
+                titulo.setText("Adicionar Turma");
+
+                turmaNomeAdd.setText("");
             }
             if (e.getSource() == autorAddConf) {
-                autorCL.setVisible(true);
-                clAutor.show(autorCL, "deletarAutor");
-                titulo.setText("Deletar Autor");
+                Turma turma = new Turma(turmaNomeAdd.getText());
+                turma.criarTurma();
+                turmaNomeAdd.setText("");
             }
             if (e.getSource() == autorMenuDel) {
-
+                autorCL.setVisible(true);
+                clAutor.show(autorCL, "deletarAutor");
+                titulo.setText("Deletar Turma");
             }
             if (e.getSource() == autorDelConf) {
 
@@ -563,15 +694,28 @@ public class AtrasoAluno extends JFrame implements ActionListener {
             if (e.getSource() == autorMenuUpd) {
                 autorCL.setVisible(true);
                 clAutor.show(autorCL, "atualizarAutor");
-                titulo.setText("Atualizar Autor");
+                titulo.setText("Atualizar Turma");
+
+                turmaNomeUpd.setText("");
+                boxTurmarUpd.removeAllItems();
+
+                condb.returnTodasTurmas();
+                for (Turma t : condb.arrayTurma) {
+                    boxTurmarUpd.addItem(t.getNome());
+                }
             }
             if (e.getSource() == autorUpdConf) {
-
+                Turma turma = condb.returnTurma(boxTurmarUpd.getSelectedItem().toString());
+                turma.atualizarTurmaDB(turmaNomeUpd.getText());
             }
             if (e.getSource() == autorMenuListar) {
                 autorCL.setVisible(true);
                 clAutor.show(autorCL, "listarAutor");
-                titulo.setText("Listar Autores");
+                titulo.setText("Listar Turma");
+
+                /**
+                 * ***********TABELA VAI AQUI******************
+                 */
             }
             if (e.getSource() == autorListConf) {
 
@@ -580,15 +724,31 @@ public class AtrasoAluno extends JFrame implements ActionListener {
             if (e.getSource() == membroMenuAdd) {
                 membroCL.setVisible(true);
                 clMembro.show(membroCL, "adicionarMembro");
-                titulo.setText("Adicionar Membro");
+                titulo.setText("Adicionar Funcionario");
+
+                tipoFuncionarioAdd.removeAllItems();
+
+                nomeFuncionarioAdd.setText("");
+                telefoneFuncionarioAdd.setText("");
+                emailFuncionarioAdd.setText("");
+
+                tipoFuncionarioAdd.addItem("Professor");
+                tipoFuncionarioAdd.addItem("Funcionario");
             }
             if (e.getSource() == membroAddConf) {
-
+                int tipo;
+                if (tipoFuncionarioAdd.getSelectedItem().toString().equals("Professor")) {
+                    tipo = 1;
+                } else {
+                    tipo = 2;
+                }
+                Funcionario funcionario = new Funcionario(nomeFuncionarioAdd.getText(), telefoneFuncionarioAdd.getText(), emailFuncionarioAdd.getText(), tipo);
+                funcionario.criarFuncionarioBD();
             }
             if (e.getSource() == membroMenuDel) {
                 membroCL.setVisible(true);
                 clMembro.show(membroCL, "deletarMembro");
-                titulo.setText("Deletar Membro");
+                titulo.setText("Deletar Funcionario");
             }
             if (e.getSource() == membroDelConf) {
 
@@ -596,23 +756,147 @@ public class AtrasoAluno extends JFrame implements ActionListener {
             if (e.getSource() == membroMenuUpd) {
                 membroCL.setVisible(true);
                 clMembro.show(membroCL, "atualizarMembro");
-                titulo.setText("Atualizar Membro");
+                titulo.setText("Atualizar Funcionario");
+
+                confUpdMembro.setEnabled(true);
+
+                boxFuncionarioUpd.setEnabled(true);
+                boxFuncionarioUpd.removeAllItems();
+                tipoFuncionarioUpd.setEnabled(true);
+                tipoFuncionarioUpd.removeAllItems();
+
+                nomeFuncionarioUpd.setText("");
+                telefoneFuncionarioUpd.setText("");
+                emaiFuncionarioUpd.setText("");
+                tipoFuncionarioUpd.setSelectedItem(1);
+
+                condb.returnTodosFuncionarios();
+                for (Funcionario f : condb.arrayFuncionario) {
+                    boxFuncionarioUpd.addItem(f.getNome());
+                }
+
+                tipoFuncionarioUpd.addItem("Professor");
+                tipoFuncionarioUpd.addItem("Funcionario");
+
             }
             if (e.getSource() == confUpdMembro) {
+                Funcionario funcionario = condb.returnFuncionarioPorNome(boxFuncionarioUpd.getSelectedItem().toString());
+                nomeFuncionarioUpd.setText(funcionario.getNome());
+                telefoneFuncionarioUpd.setText(funcionario.getTelefone());
+                emaiFuncionarioUpd.setText(funcionario.getEmail());
+                if (funcionario.getTipo() == 1) {
+                    tipoFuncionarioUpd.setSelectedItem(1);
+                } else {
+                    tipoFuncionarioUpd.setSelectedItem(2);
+                }
 
+                confUpdMembro.setEnabled(true);
             }
             if (e.getSource() == membroUpdConf) {
-
+                Funcionario funcionario = condb.returnFuncionarioPorNome(boxFuncionarioUpd.getSelectedItem().toString());
+                int tipo;
+                if (tipoFuncionarioUpd.getSelectedItem().toString().equals("Professor")) {
+                    tipo = 1;
+                } else {
+                    tipo = 2;
+                }
+                funcionario.atualizarFuncionarioDB(nomeFuncionarioUpd.getText(), telefoneFuncionarioUpd.getText(), emaiFuncionarioUpd.getText(), tipo);
+                nomeFuncionarioUpd.setText("");
+                telefoneFuncionarioUpd.setText("");
+                emaiFuncionarioUpd.setText("");
             }
             if (e.getSource() == membroMenuListar) {
                 membroCL.setVisible(true);
+                clMembro.show(membroCL, "listarMembro");
                 listarMembroTextoEdit.setText("");
-                titulo.setText("Listar Membro");
-            }
-            if (e.getSource() == membroListConf) {
+                titulo.setText("Listar Funcionario");
+                
+                condb.returnTodosFuncionariosProfessores();
 
+                String[] colunas = {"Nome", "Telefone", "Email", "Tipo"};
+                Object[][] dados = new Object[condb.arrayFuncionario.size()][4];
+
+                int size = 0;
+                for (Funcionario f : condb.arrayFuncionario) {
+                    dados[size][0] = f.getNome();
+                    dados[size][1] = f.getTelefone();
+                    dados[size][2] = f.getEmail();
+                    if (f.getTipo() == 1) {
+                        dados[size][3] = "Professor";
+                    } else {
+                        dados[size][3] = "Funcionario";
+                    }
+                    size++;
+                }
+
+                DefaultTableModel modelo = new DefaultTableModel(dados, colunas) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false; // Todas as células não são editáveis
+                    }
+                };
+
+                JTable tabela = new JTable(modelo);
+
+                // Opcional: Personalizações adicionais (como seleção de linha inteira)
+                tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                tabela.setRowSelectionAllowed(true);
+                tabela.setColumnSelectionAllowed(false);
+
+                // Adiciona a tabela a um JScrollPane
+                JScrollPane painelRolagem = new JScrollPane(tabela);
+
+                // Adiciona o painel de rolagem ao frame
+                membroListar.add(painelRolagem, BorderLayout.CENTER);
+
+                // Torna o frame visível
+                membroListar.setVisible(true);
             }
-        } catch (Exception ex) {
+            if (e.getSource() == atrasoMenuListar) {
+                atrasoListar.setVisible(true);
+                atrasoCL.setVisible(true);
+                clAtraso.show(atrasoCL, "listarAtraso");
+                titulo.setText("Listar Atraso");
+                
+                condb.returnAtrasos();
+
+                String[] colunas = {"Aluno", "Professor", "Data", "Hora", "Justificativa"};
+                Object[][] dados = new Object[condb.arrayAtraso.size()][5];
+
+                int size = 0;
+                for (Atraso a : condb.arrayAtraso) {
+                    dados[size][0] = a.getAluno().getNome();
+                    dados[size][1] = a.getFuncionario().getNome();
+                    dados[size][2] = a.getData();
+                    dados[size][3] = a.getHora();
+                    dados[size][4] = a.getJustificativa();
+                }
+
+                DefaultTableModel modelo = new DefaultTableModel(dados, colunas) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false; // Todas as células não são editáveis
+                    }
+                };
+
+                JTable tabela = new JTable(modelo);
+
+                // Opcional: Personalizações adicionais (como seleção de linha inteira)
+                tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                tabela.setRowSelectionAllowed(true);
+                tabela.setColumnSelectionAllowed(false);
+
+                // Adiciona a tabela a um JScrollPane
+                JScrollPane painelRolagem = new JScrollPane(tabela);
+
+                // Adiciona o painel de rolagem ao frame
+                atrasoListar.add(painelRolagem, BorderLayout.CENTER);
+
+                // Torna o frame visível
+                atrasoListar.setVisible(true);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
         }
     }
 }

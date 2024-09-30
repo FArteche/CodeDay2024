@@ -37,22 +37,7 @@ public class ConDB {
             return aluno;
         }
     }
-   
-        
-    public Aluno returnAlunoPorNome(String nomeAluno) throws SQLException{
-        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
-            
-            Aluno aluno = null;
-            
-            PreparedStatement query = con.prepareStatement("SELECT * FROM aluno WHERE nome_aluno LIKE '"+nomeAluno+"';");
-            ResultSet rSet = query.executeQuery();
-            while (rSet.next()) {
-                aluno = new Aluno(rSet.getString(2), rSet.getString(3), rSet.getString(4), rSet.getInt(5));
-            }
-            con.close();
-            return aluno;
-        }
-    }
+    
     
     public Funcionario returnFuncionario(int idFunc) throws SQLException{
         try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
@@ -108,7 +93,82 @@ public class ConDB {
         }
     }
     
-    
+           
+    public void returnAtrasos() throws SQLException {
+        arrayAtraso.clear();
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            
+            Atraso atraso;
+            
+            PreparedStatement query = con.prepareStatement("SELECT * FROM atraso");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                arrayAtraso.add(atraso = new Atraso(returnAluno(rSet.getInt(5)), rSet.getString(2), rSet.getString(3), rSet.getString(4), returnFuncionario(rSet.getInt(6))));
+            }
+            con.close();
+        }
+    }
+        
+    public void returnTodosFuncionariosProfessores() throws SQLException {
+        arrayAluno.clear();
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            
+            Funcionario funcionario;
+            
+            PreparedStatement query = con.prepareStatement("SELECT * FROM funcionario");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                arrayFuncionario.add(funcionario = new Funcionario(rSet.getString(2), rSet.getString(3), rSet.getString(4), rSet.getInt(5)));
+            }
+            con.close();
+        }
+    }
+       
+    public Funcionario returnFuncionarioPorNome(String nomeFunc) throws SQLException{
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            
+            Funcionario funcionario = null ;
+            
+            PreparedStatement query = con.prepareStatement("SELECT * FROM funcionario WHERE nome_func = '"+nomeFunc+"';");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                funcionario = new Funcionario(rSet.getString(2), rSet.getString(3), rSet.getString(4), rSet.getInt(5));
+            }
+            con.close();
+            return funcionario;
+        }
+    }
+
+    public Turma returnTurma(String turmaNome) throws SQLException {
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+
+            Turma turma = null;
+
+            PreparedStatement query = con.prepareStatement("SELECT * FROM turma WHERE nome_turma LIKE '" + turmaNome + "';");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                turma = new Turma(rSet.getString(2));
+            }
+            con.close();
+            return turma;
+        }
+    }
+
+    public Aluno returnAlunoPorNome(String nomeAluno) throws SQLException{
+        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
+            
+            Aluno aluno = null;
+            
+            PreparedStatement query = con.prepareStatement("SELECT * FROM aluno WHERE nome_aluno LIKE '"+nomeAluno+"';");
+            ResultSet rSet = query.executeQuery();
+            while (rSet.next()) {
+                aluno = new Aluno(rSet.getString(2), rSet.getString(3), rSet.getString(4), rSet.getInt(5));
+            }
+            con.close();
+            return aluno;
+        }
+    }
+
     public int getTurmaId(String nome) throws SQLException {
 
         int retorno = 0;
@@ -179,20 +239,6 @@ public class ConDB {
         }
     }
     
-    public void returnAtrasos() throws SQLException {
-        arrayAtraso.clear();
-        try (Connection con = DriverManager.getConnection(url, "root", "123abc");) {
-            
-            Atraso atraso;
-            
-            PreparedStatement query = con.prepareStatement("SELECT * FROM atraso");
-            ResultSet rSet = query.executeQuery();
-            while (rSet.next()) {
-                arrayAtraso.add(atraso = new Atraso(returnAluno(rSet.getInt(5)), rSet.getString(2), rSet.getString(3), rSet.getString(4), returnFuncionario(rSet.getInt(6))));
-            }
-            con.close();
-        }
-    }
     
     public void returnTodosAtrasosAluno(String nomeAluno) throws SQLException {
         arrayAluno.clear();
